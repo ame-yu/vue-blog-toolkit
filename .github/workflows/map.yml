@@ -1,0 +1,25 @@
+name: Release Script
+on: push
+
+jobs:
+  update-time:
+    runs-on: ubuntu-latest
+    name: Publish script
+    steps:
+      - uses: actions/checkout@v2.0.0
+      - name: Deno
+        uses: denolib/setup-deno@v1.2.0
+      - run: cd map && deno bundle src/index.ts dist/map.js
+      - name: Delete
+        uses: ame-yu/action-delete-latest-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: $ {{ github.repository }}
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          name: latest
+          tag_name: latest
+          files: map/dist/map.js
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

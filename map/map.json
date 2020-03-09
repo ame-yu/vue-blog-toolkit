@@ -1,0 +1,69 @@
+{
+    "tree": {
+        "path": "master:",
+        "file": [
+            {
+                "path": "master:.github",
+                "file": [
+                    "update.ts",
+                    {
+                        "path": "master:.github/workflows",
+                        "file": [
+                            "update.yml"
+                        ]
+                    }
+                ]
+            },
+            {
+                "path": "master:其他笔记",
+                "file": [
+                    "test.md",
+                    "设定.md",
+                    "这个文件是新的"
+                ]
+            },
+            {
+                "path": "master:开发笔记",
+                "file": [
+                    "Stylus进阶指南.md",
+                    {
+                        "path": "master:开发笔记/前端",
+                        "file": [
+                            "Vue3踩坑记录-持续更新.md"
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    "manifest": {
+        "/.github/update.ts": {
+            "lastEditDate": "2020",
+            "size": 0
+        },
+        "/.github/workflows/update.yml": {
+            "lastEditDate": "2020",
+            "size": 0
+        },
+        "/其他笔记/test.md": {
+            "lastEditDate": "2020",
+            "size": 0
+        },
+        "/其他笔记/设定.md": {
+            "lastEditDate": "2020",
+            "size": 0
+        },
+        "/其他笔记/这个文件是新的": {
+            "lastEditDate": "2020",
+            "size": 0
+        },
+        "/开发笔记/Stylus进阶指南.md": {
+            "lastEditDate": "2020",
+            "size": 0
+        },
+        "/开发笔记/前端/Vue3踩坑记录-持续更新.md": {
+            "lastEditDate": "2020",
+            "size": 0
+        }
+    }
+}
