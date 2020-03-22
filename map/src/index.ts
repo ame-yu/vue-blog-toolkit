@@ -10,17 +10,19 @@ async function writeToMapJson() {
   const manifest: any = {}
   // Remove folder name starts with dot
   tree = grepForPath(tree,it=>!(it.startsWith("/.")))
-  toFilePathArray(tree).forEach(it => {
+  for (const it of toFilePathArray(tree)) {
+    const size = await gitkit.getFileSize(it)
+    const lastEditDate = await gitkit.getLastEditDate(it)
     manifest[it] = {
-      lastEditDate: "2020-03-09T01:00:42.852Z",
-      size: 0
+      lastEditDate,
+      size,
     }
-  })
+  }
   const info: ReleaseInfo = {
     tree,
     manifest
   }
-
+  console.log(info)
   const str = JSON.stringify(info)
   const encoder = new TextEncoder();
   const data = encoder.encode(str);

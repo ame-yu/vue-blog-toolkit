@@ -179,6 +179,39 @@ define("githubapi", ["require", "exports"], function (require, exports) {
                 file: await Promise.all(li)
             };
         }
+        async getFileSize(filename) {
+            const path = filename.startsWith("/") ? `master:${filename.slice(1)}` : filename;
+            const rsp = await this.sendQuery(`
+            file: object(expression: "${path}") {
+              ... on Blob {
+                byteSize
+              }
+            }
+            `);
+            const parsed = await rsp.json();
+            return parsed.data.repository.file.byteSize;
+        }
+        async getLastEditDate(filename) {
+            const path = filename.startsWith("/") ? filename.slice(1) : filename;
+            const rsp = await this.sendQuery(`
+        ref(qualifiedName: "refs/heads/master") {
+            target {
+              ... on Commit {
+                history(first: 1, path: "${path}") {
+                  edges {
+                    node {
+                      committedDate
+                    }
+                  }
+                }
+              }
+            }
+          }
+            `);
+            const parsed = await rsp.json();
+            console.log(parsed.data.repository.ref.target.history);
+            return parsed.data.repository.ref.target.history.edges[0].node.committedDate;
+        }
     }
     exports.GitKit = GitKit;
     function toFolderPathArray(src) {
@@ -273,8 +306,10 @@ define("githubapi", ["require", "exports"], function (require, exports) {
 define("index", ["require", "exports", "githubapi"], function (require, exports, githubapi_ts_1) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    const env = Deno.env();
-    const token = "36c203d24a41cb5a06530b84a52ba2f499b64334";
+    // const env = Deno.env();
+    // const token = env.GITHUB_TOKEN
+    // const [owner, repo] = env.GITHUB_REPOSITORY.split("/")
+    const token = "e6f29cd8f69aebc3467ed514ddc363698bd51106";
     const [owner, repo] = ["ame-yu", "blog"];
     async function writeToMapJson() {
         var gitkit = new githubapi_ts_1.GitKit({ owner, repo, token });
@@ -282,16 +317,19 @@ define("index", ["require", "exports", "githubapi"], function (require, exports,
         const manifest = {};
         // Remove folder name starts with dot
         tree = githubapi_ts_1.grepForPath(tree, it => !(it.startsWith("/.")));
-        githubapi_ts_1.toFilePathArray(tree).forEach(it => {
+        for (const it of githubapi_ts_1.toFilePathArray(tree)) {
+            const size = await gitkit.getFileSize(it);
+            const lastEditDate = await gitkit.getLastEditDate(it);
             manifest[it] = {
-                lastEditDate: "2020-03-09T01:00:42.852Z",
-                size: 0
+                lastEditDate,
+                size,
             };
-        });
+        }
         const info = {
             tree,
             manifest
         };
+        console.log(info);
         const str = JSON.stringify(info);
         const encoder = new TextEncoder();
         const data = encoder.encode(str);

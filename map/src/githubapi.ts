@@ -1,6 +1,5 @@
 import { dirObj, dirItem } from "./type.ts"
 
-
 type gitStruct = {
     type: string;
     name: string;
@@ -75,6 +74,42 @@ class GitKit {
             file: await Promise.all(li)
         };
     }
+
+
+    async getFileSize(filename: string):Promise<number>{
+        const path = filename.startsWith("/")? `master:${filename.slice(1)}`: filename
+        const rsp = await this.sendQuery(`
+            file: object(expression: "${path}") {
+              ... on Blob {
+                byteSize
+              }
+            }
+            `);
+        const parsed = await rsp.json()
+        return parsed.data.repository.file.byteSize
+    }
+
+    async getLastEditDate(filename: string):Promise<number>{
+        const path = filename.startsWith("/")? filename.slice(1): filename
+        const rsp = await this.sendQuery(`
+        ref(qualifiedName: "refs/heads/master") {
+            target {
+              ... on Commit {
+                history(first: 1, path: "${path}") {
+                  edges {
+                    node {
+                      committedDate
+                    }
+                  }
+                }
+              }
+            }
+          }
+            `);
+        const parsed = await rsp.json()
+        return parsed.data.repository.ref.target.history.edges[0].node.committedDate
+    }
+
 }
 
 
