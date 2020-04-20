@@ -7,9 +7,10 @@ jobs:
     name: Publish script
     steps:
       - uses: actions/checkout@v2.0.0
-      - name: Deno
-        uses: denolib/setup-deno@v1.2.0
-      - run: cd map && deno bundle src/index.ts dist/map.js
+      - uses: denolib/setup-deno@v1.3.0
+      - run: |
+          deno bundle map/src/index.ts map.js
+          deno bundle check-update/src/index.ts check-update.js
       - name: Delete
         uses: ame-yu/action-delete-latest-release@v1
         env:
@@ -20,6 +21,8 @@ jobs:
         with:
           name: latest
           tag_name: latest
-          files: map/dist/map.js
+          files: |
+            map.js
+            check-update.js
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

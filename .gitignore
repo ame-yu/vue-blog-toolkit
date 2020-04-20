@@ -1,6 +1,8 @@
+dist
 # output
 map.json
 *.rest
+try.js
 # Logs
 logs
 *.log
