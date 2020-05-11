@@ -1,8 +1,8 @@
 const jsonFetch = async (url: string) => (await (await fetch(url)).json())
 
-const env = Deno.env();
-const vblogRepo = env.VUE_BLOG_REPOSITORY
-const siteRepo = env.GITHUB_REPOSITORY
+const env = Deno.env;
+const vblogRepo = env.get("VUE_BLOG_REPOSITORY")
+const siteRepo = env.get("GITHUB_REPOSITORY")
 
 async function timeCompare(){
     var vblog = await jsonFetch(`https://api.github.com/repos/${vblogRepo}/branches/master`)

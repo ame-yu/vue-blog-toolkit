@@ -1,8 +1,8 @@
 import { GitKit, toFilePathArray, grepForPath } from "./githubapi.ts"
 import { ReleaseInfo } from "./type.ts"
-const env = Deno.env();
-const token = env.GITHUB_TOKEN
-const [owner, repo] = env.GITHUB_REPOSITORY.split("/")
+const env = Deno.env;
+const token = env.get("GITHUB_TOKEN") ?? ""
+const [owner, repo] = env.get("GITHUB_REPOSITORY")!.split("/")
 
 async function writeToMapJson() {
   var gitkit = new GitKit({ owner, repo, token })

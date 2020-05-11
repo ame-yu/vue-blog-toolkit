@@ -2,7 +2,7 @@ dist
 # output
 map.json
 *.rest
-try.js
+test.js
 # Logs
 logs
 *.log
